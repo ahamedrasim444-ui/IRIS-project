@@ -3,10 +3,10 @@ echo ========================================================
 echo Push Iris EDA Dashboard to GitHub
 echo ========================================================
 echo.
-echo Step 1: Create an empty repository on GitHub at:
-echo         https://github.com/new
+echo Step 1: Default repository URL is set to:
+echo         https://github.com/ahamedrasim444-ui/IRIS-project.git
 echo.
-set /p REPO_URL="Enter your GitHub Repository URL (e.g. https://github.com/username/iris-eda-dashboard.git): "
+set "REPO_URL=https://github.com/ahamedrasim444-ui/IRIS-project.git"
 
 if "%REPO_URL%"=="" (
     echo Error: No repository URL provided.
