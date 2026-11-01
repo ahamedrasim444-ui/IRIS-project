@@ -54,10 +54,12 @@ except Exception as _init_err:
 @app.route("/", methods=["GET"])
 def index():
     """
-    Root endpoint: Returns system status, runtime architecture, and API discovery routes.
+    Root endpoint: Returns welcome payload, system status, runtime architecture, and API discovery routes.
     """
     return jsonify({
+        "message": "Welcome to the Iris Botanical Analytics Lab API",
         "status": "online",
+        "api_status": "healthy",
         "service": "Iris Botanical Analytics Lab API",
         "runtime": "Vercel Serverless Python (Flask WSGI)",
         "framework": "Flask 3.0.2",
@@ -268,6 +270,7 @@ def predict():
             "status": "success",
             "predicted_species": predicted_species,
             "confidence_percentage": confidence_pct,
+            "softmax_confidence_percentage": confidence_pct,
             "distance_cm": min_distance,
             "all_distances": {k: round(v, 4) for k, v in res["distances"].items()},
             "class_probabilities": {k: round(v, 2) for k, v in res["proximity_pct"].items()},
