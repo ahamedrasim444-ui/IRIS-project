@@ -16,6 +16,18 @@ import pandas as pd
 import data_engine
 import database
 
+# Streamlit CLI execution interceptor (`streamlit run app.py`)
+try:
+    import streamlit as st
+    if hasattr(st, "runtime") and st.runtime.exists():
+        base_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else "."
+        target_script = os.path.join(base_dir, "streamlit_app.py")
+        with open(target_script, "r", encoding="utf-8") as _st_f:
+            _st_code = compile(_st_f.read(), target_script, "exec")
+            exec(_st_code, globals())
+except Exception as _st_err:
+    pass
+
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
