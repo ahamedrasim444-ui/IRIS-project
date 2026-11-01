@@ -1,0 +1,23 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sneatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#696cff" />
+      <stop offset="50%" stop-color="#787bff" />
+      <stop offset="100%" stop-color="#855cf6" />
+    </linearGradient>
+    <filter id="sneatGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#696cff" flood-opacity="0.35" />
+    </filter>
+  </defs>
+  <!-- Sneat Iconic Rounded Badge -->
+  <rect x="4" y="4" width="92" height="92" rx="22" fill="url(#sneatGradient)" filter="url(#sneatGlow)" />
+  <!-- Botanical Iris Petals & Symmetry -->
+  <path d="M50 18 C45 32 36 44 26 50 C38 52 46 62 50 82 C54 62 62 52 74 50 C64 44 55 32 50 18 Z" fill="#ffffff" fill-opacity="0.95" />
+  <!-- Inner Standard Petals -->
+  <path d="M50 30 C47 40 43 47 38 50 C44 52 47 57 50 70 C53 57 56 52 62 50 C57 47 53 40 50 30 Z" fill="#e7e7ff" />
+  <!-- Golden Biological Core Stamen -->
+  <circle cx="50" cy="50" r="5.5" fill="#71dd37" stroke="#ffffff" stroke-width="2" />
+  <!-- Botanical Calibration Axis Line -->
+  <line x1="50" y1="50" x2="50" y2="80" stroke="#03c3ec" stroke-width="2.5" stroke-linecap="round" />
+  <line x1="28" y1="50" x2="72" y2="50" stroke="#ffffff" stroke-width="1.2" stroke-dasharray="2 2" stroke-opacity="0.8" />
+</svg>

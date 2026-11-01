@@ -1,0 +1,7 @@
+# Exclude Python serverless runtime detection
+*.py
+requirements.txt
+cloudflared.exe
+push_to_github.bat
+*.db
+.streamlit/

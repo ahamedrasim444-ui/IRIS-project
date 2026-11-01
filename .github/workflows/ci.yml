@@ -26,4 +26,4 @@ jobs:
     - name: Run Test Suite & Verify Syntax
       run: |
         python test_engine.py
-        python -m py_compile app.py
+        python -m py_compile app.py streamlit_app.py

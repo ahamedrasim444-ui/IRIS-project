@@ -11,8 +11,6 @@ Cross-platform responsive design for Mobile, Tablet, and Desktop. Zero personal 
 import os
 import sys
 import io
-import math
-import base64
 import urllib.parse
 import sqlite3
 import numpy as np
@@ -345,181 +343,6 @@ strong, b {
     margin-bottom: 6px;
 }
 
-/* 3D Botanical Specimen Cards (Varieties Gallery) */
-.specimen-card-3d {
-    background: linear-gradient(145deg, #131B2E 0%, #17233B 100%);
-    border: 1px solid rgba(51, 65, 85, 0.55);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
-    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.35s ease, border-color 0.35s ease;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-.specimen-card-3d:hover {
-    transform: translateY(-6px) scale(1.01);
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.22);
-    border-color: rgba(56, 189, 248, 0.55);
-}
-
-.specimen-img-container {
-    position: relative;
-    width: 100%;
-    height: 190px;
-    overflow: hidden;
-    background: #0B0F17;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.specimen-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.45s ease;
-}
-
-.specimen-card-3d:hover .specimen-img {
-    transform: scale(1.08);
-}
-
-.specimen-tag-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: rgba(11, 15, 23, 0.88);
-    backdrop-filter: blur(8px);
-    border-radius: 14px;
-    padding: 4px 11px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    border: 1px solid rgba(51, 65, 85, 0.6);
-}
-
-.specimen-idx-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    background: rgba(14, 77, 107, 0.85);
-    color: #38BDF8;
-    backdrop-filter: blur(8px);
-    border-radius: 14px;
-    padding: 4px 10px;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    border: 1px solid rgba(56, 189, 248, 0.4);
-}
-
-.specimen-body {
-    padding: 1.15rem 1.25rem;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: space-between;
-}
-
-.specimen-id {
-    font-size: 0.74rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #38BDF8;
-}
-
-.specimen-title {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: #FFFFFF;
-    margin: 4px 0 2px 0;
-    line-height: 1.25;
-}
-
-.specimen-subtitle {
-    font-size: 0.73rem;
-    color: #94A3B8;
-    margin-bottom: 10px;
-    line-height: 1.35;
-    font-style: italic;
-}
-
-.specimen-grid-metrics {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    background: rgba(11, 15, 23, 0.6);
-    border: 1px solid rgba(51, 65, 85, 0.4);
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 12px;
-}
-
-.specimen-metric-item {
-    display: flex;
-    flex-direction: column;
-}
-
-.specimen-metric-lbl {
-    font-size: 0.65rem;
-    color: #94A3B8;
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-}
-
-.specimen-metric-val {
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: #FFFFFF;
-}
-
-.specimen-pill-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-/* Species Hero Header Card */
-.species-hero-banner {
-    display: flex;
-    gap: 20px;
-    background: linear-gradient(135deg, #131B2E 0%, #17233B 100%);
-    border: 1px solid rgba(51, 65, 85, 0.6);
-    border-radius: 16px;
-    overflow: hidden;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.species-hero-img-wrap {
-    width: 220px;
-    height: 140px;
-    border-radius: 12px;
-    overflow: hidden;
-    flex-shrink: 0;
-    border: 1px solid rgba(56, 189, 248, 0.3);
-}
-
-.species-hero-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.species-hero-content {
-    flex-grow: 1;
-    min-width: 240px;
-}
-
 /* Prediction Banner */
 .prediction-banner {
     background: linear-gradient(135deg, rgba(14, 77, 107, 0.35) 0%, rgba(19, 27, 46, 0.85) 100%);
@@ -741,14 +564,6 @@ div[data-testid="stInfo"] {
     .pred-species-title {
         font-size: 1.75rem !important;
     }
-    .species-hero-banner {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-    }
-    .species-hero-img-wrap {
-        width: 100% !important;
-        height: 160px !important;
-    }
 }
 </style>
 """
@@ -780,81 +595,57 @@ LOGO_SVG = """<svg width="44" height="44" viewBox="0 0 100 100" fill="none" xmln
 # ------------------------------------------------------------------------------
 # 5. DATABASE INITIALIZATION & HELPERS
 # ------------------------------------------------------------------------------
-def get_db_path() -> str:
-    """Returns resilient database file path with serverless /tmp fallback."""
-    if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
-        return "/tmp/predictions.db"
-    try:
-        os.makedirs("data", exist_ok=True)
-        return os.path.join("data", "predictions.db")
-    except Exception:
-        return "/tmp/predictions.db"
+DB_PATH = "data/predictions.db"
 
 def init_database():
-    try:
-        db_file = get_db_path()
-        os.makedirs(os.path.dirname(db_file), exist_ok=True)
-        conn = sqlite3.connect(db_file)
-        cursor = conn.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS predictions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                sepal_length REAL,
-                sepal_width REAL,
-                petal_length REAL,
-                petal_width REAL,
-                predicted_species TEXT,
-                confidence_pct REAL,
-                distance_cm REAL
-            )
-        """)
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        print(f"Database init notice: {e}")
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS predictions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            sepal_length REAL,
+            sepal_width REAL,
+            petal_length REAL,
+            petal_width REAL,
+            predicted_species TEXT,
+            confidence_pct REAL,
+            distance_cm REAL
+        )
+    """)
+    conn.commit()
+    conn.close()
 
 def log_prediction_db(sl, sw, pl, pw, species, conf, dist):
-    try:
-        db_file = get_db_path()
-        conn = sqlite3.connect(db_file)
-        cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO predictions (sepal_length, sepal_width, petal_length, petal_width, predicted_species, confidence_pct, distance_cm)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (sl, sw, pl, pw, species, conf, dist))
-        conn.commit()
-        new_id = cursor.lastrowid
-        conn.close()
-        return new_id
-    except Exception:
-        return 1
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO predictions (sepal_length, sepal_width, petal_length, petal_width, predicted_species, confidence_pct, distance_cm)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, (sl, sw, pl, pw, species, conf, dist))
+    conn.commit()
+    new_id = cursor.lastrowid
+    conn.close()
+    return new_id
 
 def get_recent_predictions_db(limit=10):
-    try:
-        db_file = get_db_path()
-        if not os.path.exists(db_file):
-            return pd.DataFrame()
-        conn = sqlite3.connect(db_file)
-        df = pd.read_sql_query(
-            f"SELECT id, timestamp, sepal_length, sepal_width, petal_length, petal_width, predicted_species, confidence_pct, distance_cm FROM predictions ORDER BY id DESC LIMIT {limit}",
-            conn
-        )
-        conn.close()
-        return df
-    except Exception:
+    if not os.path.exists(DB_PATH):
         return pd.DataFrame()
+    conn = sqlite3.connect(DB_PATH)
+    df = pd.read_sql_query(
+        f"SELECT id, timestamp, sepal_length, sepal_width, petal_length, petal_width, predicted_species, confidence_pct, distance_cm FROM predictions ORDER BY id DESC LIMIT {limit}",
+        conn
+    )
+    conn.close()
+    return df
 
 def clear_database_db():
-    try:
-        db_file = get_db_path()
-        if os.path.exists(db_file):
-            conn = sqlite3.connect(db_file)
-            conn.cursor().execute("DELETE FROM predictions")
-            conn.commit()
-            conn.close()
-    except Exception:
-        pass
+    if os.path.exists(DB_PATH):
+        conn = sqlite3.connect(DB_PATH)
+        conn.cursor().execute("DELETE FROM predictions")
+        conn.commit()
+        conn.close()
 
 init_database()
 
@@ -906,18 +697,15 @@ def fetch_iris_data():
 
 @st.cache_data(ttl=3600)
 def load_iris_database():
-    """Wrapper that handles data cleaning with local file priority and remote API fallback."""
-    for fallback_path in ["data/iris.csv", "iris.csv"]:
-        if os.path.exists(fallback_path):
-            try:
-                data = pd.read_csv(fallback_path)
-                return clean_iris_dataframe(data), "Data Source: Verified Botanical Archive (Local)", "success"
-            except Exception:
-                pass
+    """Wrapper that handles data cleaning and local cache fallbacks."""
     try:
         raw = fetch_iris_data()
         return clean_iris_dataframe(raw), "Data Source: Live Open Data API (Connected)", "success"
     except Exception:
+        for fallback_path in ["data/iris.csv", "iris.csv"]:
+            if os.path.exists(fallback_path):
+                data = pd.read_csv(fallback_path)
+                return clean_iris_dataframe(data), "Data Source: Local Archive (Cached)", "info"
         raise RuntimeError("Unable to load Iris dataset.")
 
 try:

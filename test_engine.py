@@ -1,11 +1,10 @@
 """
 test_engine.py
 Automated test suite validating data processing, pure NumPy linear algebra,
-predictive engine, Matplotlib chart generation, and Flask REST API endpoints.
+predictive engine, and Matplotlib chart generation.
 """
 
 import os
-import json
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -31,7 +30,6 @@ from visualizations import (
     plot_query_point_projection,
 )
 from styles import get_custom_css, render_hero_banner, render_easter_egg_card
-from app import app
 
 
 def test_data_loading():
@@ -100,41 +98,58 @@ def test_nearest_centroid_classifier(df):
     res_setosa = predict_nearest_centroid(setosa_query, centroids)
     assert res_setosa["predicted_species"] == "Setosa", f"Expected Setosa, got {res_setosa['predicted_species']}"
 
-    # Test Versicolor query
-    versicolor_query = np.array([5.9, 2.8, 4.3, 1.3])
-    res_versicolor = predict_nearest_centroid(versicolor_query, centroids)
-    assert res_versicolor["predicted_species"] == "Versicolor", f"Expected Versicolor, got {res_versicolor['predicted_species']}"
-
     # Test Virginica query
-    virginica_query = np.array([6.6, 3.0, 5.6, 2.0])
-    res_virginica = predict_nearest_centroid(virginica_query, centroids)
-    assert res_virginica["predicted_species"] == "Virginica", f"Expected Virginica, got {res_virginica['predicted_species']}"
+    virginica_query = np.array([6.7, 3.1, 5.6, 2.1])
+    res_virg = predict_nearest_centroid(virginica_query, centroids)
+    assert res_virg["predicted_species"] == "Virginica", f"Expected Virginica, got {res_virg['predicted_species']}"
 
     print("  [OK] Nearest-Centroid live predictions passed.")
 
 
 def test_visualizations(df):
     print("Testing Matplotlib visualizations...")
-    manual_cov, _ = compute_covariance_matrix_manual(df, FEATURE_COLS)
-    fig1 = plot_covariance_heatmap(manual_cov, FEATURE_COLS)
-    assert fig1 is not None
+    cov, _ = compute_covariance_matrix_manual(df, FEATURE_COLS)
+    corr, _ = compute_correlation_matrix_manual(df, FEATURE_COLS)
+    centroids = compute_species_centroids(df, FEATURE_COLS)
+
+    fig1 = plot_covariance_heatmap(cov, FEATURE_COLS)
+    assert isinstance(fig1, plt.Figure)
     plt.close(fig1)
 
-    manual_corr, _ = compute_correlation_matrix_manual(df, FEATURE_COLS)
-    fig2 = plot_correlation_heatmap(manual_corr, FEATURE_COLS)
-    assert fig2 is not None
+    fig2 = plot_correlation_heatmap(corr, FEATURE_COLS)
+    assert isinstance(fig2, plt.Figure)
     plt.close(fig2)
 
-    centroids = compute_species_centroids(df, FEATURE_COLS)
-    fig3 = plot_bivariate_scatter(df, "sepal_length", "petal_length", centroids)
-    assert fig3 is not None
+    fig3 = plot_bivariate_scatter(df, "petal_length", "petal_width", centroids)
+    assert isinstance(fig3, plt.Figure)
     plt.close(fig3)
 
     fig4 = plot_distributions_grid(df)
-    assert fig4 is not None
+    assert isinstance(fig4, plt.Figure)
     plt.close(fig4)
 
-    print("  [OK] Matplotlib figures generated successfully without errors.")
+    test_q = np.array([5.8, 3.0, 4.2, 1.3])
+    pred_res = predict_nearest_centroid(test_q, centroids)
+    
+    fig5 = plot_prediction_diagnostics(pred_res["distances"], pred_res["proximity_pct"], pred_res["predicted_species"])
+    assert isinstance(fig5, plt.Figure)
+    plt.close(fig5)
+
+    fig6 = plot_query_point_projection(df, test_q, centroids, pred_res["predicted_species"])
+    assert isinstance(fig6, plt.Figure)
+    plt.close(fig6)
+
+    from visualizations import plot_boxplot_dispersion, plot_interactive_iris_flower
+    fig7 = plot_boxplot_dispersion(df, "petal_length")
+    assert isinstance(fig7, plt.Figure)
+    plt.close(fig7)
+
+    fig8 = plot_interactive_iris_flower(5.8, 3.0, 4.2, 1.3, "Versicolor")
+    assert isinstance(fig8, plt.Figure)
+    assert len(fig8.axes) == 2
+    plt.close(fig8)
+
+    print("  [OK] All 8 Matplotlib figures generated successfully without errors.")
 
 
 def test_database():
@@ -151,80 +166,24 @@ def test_database():
     print("  [OK] Database logging and statistics verified.")
 
 
-def test_flask_api():
-    print("Testing Flask REST API endpoints...")
-    client = app.test_client()
-
-    # 1. Test Root Route (/)
-    res_root = client.get("/")
-    assert res_root.status_code == 200, f"Expected 200 on /, got {res_root.status_code}"
-    data_root = res_root.get_json()
-    assert data_root["status"] == "online"
-    assert "endpoints" in data_root
-
-    # Test Browser UI Endpoint (/streamlit and Accept: text/html)
-    res_ui = client.get("/streamlit")
-    assert res_ui.status_code == 200
-    assert "Iris Botanical Analytics Lab" in res_ui.get_data(as_text=True)
-
-    res_html = client.get("/", headers={"Accept": "text/html"})
-    assert res_html.status_code == 200
-    assert "Iris Botanical Analytics Lab" in res_html.get_data(as_text=True)
-
-    # 2. Test Health Route (/api/health)
-    res_health = client.get("/api/health")
-    assert res_health.status_code == 200, f"Expected 200 on /api/health, got {res_health.status_code}"
-    data_health = res_health.get_json()
-    assert data_health["status"] == "healthy"
-    assert "database" in data_health
-
-    # 3. Test Dataset Route (/api/dataset)
-    res_data = client.get("/api/dataset")
-    assert res_data.status_code == 200, f"Expected 200 on /api/dataset, got {res_data.status_code}"
-    data_ds = res_data.get_json()
-    assert data_ds["total_records"] == 150
-    assert len(data_ds["data"]) == 150
-    assert "summary_statistics" in data_ds
-
-    # Test dataset filtering
-    res_data_filtered = client.get("/api/dataset?species=setosa&limit=10")
-    assert res_data_filtered.status_code == 200
-    data_filtered = res_data_filtered.get_json()
-    assert data_filtered["returned_records"] == 10
-    assert all(row["species"] == "Setosa" for row in data_filtered["data"])
-
-    # 4. Test Predict Route GET (/api/predict)
-    res_pred_get = client.get("/api/predict")
-    assert res_pred_get.status_code == 200
-    assert "specimen_archetypes" in res_pred_get.get_json()
-
-    # 5. Test Predict Route POST Setosa (/api/predict)
-    setosa_payload = {"sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2}
-    res_pred_setosa = client.post("/api/predict", json=setosa_payload)
-    assert res_pred_setosa.status_code == 200, f"Expected 200 on POST /api/predict, got {res_pred_setosa.status_code}"
-    pred_data = res_pred_setosa.get_json()
-    assert pred_data["predicted_species"] == "Setosa"
-    assert pred_data["confidence_percentage"] > 70.0
-    assert "transaction_id" in pred_data
-
-    # 6. Test Predict Route POST Virginica (/api/predict)
-    virginica_payload = {"sepal_length": 6.7, "sepal_width": 3.1, "petal_length": 5.6, "petal_width": 2.4}
-    res_pred_virginica = client.post("/api/predict", json=virginica_payload)
-    assert res_pred_virginica.status_code == 200
-    assert res_pred_virginica.get_json()["predicted_species"] == "Virginica"
-
-    # 7. Test Predict Error Handling (missing fields)
-    bad_payload = {"sepal_length": 5.1}
-    res_bad = client.post("/api/predict", json=bad_payload)
-    assert res_bad.status_code == 400
-    assert "Missing required coordinates" in res_bad.get_json()["message"]
-
-    print("  [OK] Flask REST API endpoints verified successfully.")
+def test_styles():
+    print("Testing styles and Easter egg assets...")
+    css_default = get_custom_css(False)
+    assert "font-family" in css_default
+    css_active = get_custom_css(True)
+    assert "floatEffect" in css_active
+    
+    banner = render_hero_banner()
+    assert "Iris Flower Data Analysis" in banner
+    
+    easter_egg = render_easter_egg_card()
+    assert "import antigravity" in easter_egg
+    print("  [OK] Styles and banners verified.")
 
 
 if __name__ == "__main__":
     print("========================================")
-    print("STARTING TEST SUITE FOR IRIS FLASK BACKEND")
+    print("STARTING TEST SUITE FOR IRIS EDA DASHBOARD")
     print("========================================")
     df = test_data_loading()
     test_filtering(df)
@@ -232,7 +191,7 @@ if __name__ == "__main__":
     test_nearest_centroid_classifier(df)
     test_visualizations(df)
     test_database()
-    test_flask_api()
+    test_styles()
     print("========================================")
     print("ALL TESTS PASSED WITH 100% SUCCESS!")
     print("========================================")

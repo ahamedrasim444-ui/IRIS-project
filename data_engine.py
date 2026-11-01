@@ -26,26 +26,14 @@ SPECIES_COLORS = {
 
 def load_dataset(csv_path: str = "data/iris.csv") -> pd.DataFrame:
     """Loads Iris dataset, standardizes columns, and adds engineered features."""
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    candidates = [
-        csv_path,
-        os.path.join(base_dir, csv_path),
-        os.path.join(base_dir, "data", "iris.csv"),
-        "iris.csv",
-        os.path.join(base_dir, "iris.csv"),
-    ]
-    df = None
-    for p in candidates:
-        if p and os.path.exists(p):
-            try:
-                df = pd.read_csv(p)
-                if not df.empty:
-                    break
-            except Exception:
-                continue
-
-    if df is None:
-        raise FileNotFoundError(f"Dataset not found at any candidate paths: {candidates}")
+    if os.path.exists(csv_path):
+        df = pd.read_csv(csv_path)
+    else:
+        # Fallback to local file in current dir if any
+        if os.path.exists("iris.csv"):
+            df = pd.read_csv("iris.csv")
+        else:
+            raise FileNotFoundError(f"Dataset not found at {csv_path}")
 
     # Standardize column naming
     df.columns = [col.strip().lower().replace(" ", "_").replace("_(cm)", "") for col in df.columns]
