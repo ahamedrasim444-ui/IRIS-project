@@ -181,6 +181,34 @@ def test_styles():
     print("  [OK] Styles and banners verified.")
 
 
+def test_flask_app():
+    print("Testing Flask app endpoints...")
+    from app import app
+    client = app.test_client()
+    
+    # 1. Test Root Route (defaults to HTML dashboard)
+    res_root = client.get("/")
+    assert res_root.status_code == 200
+    assert "text/html" in res_root.content_type
+    assert "Iris Botanical Analytics Lab" in res_root.get_data(as_text=True)
+
+    # 2. Test JSON query (?json=true)
+    res_json = client.get("/?json=true")
+    assert res_json.status_code == 200
+    assert res_json.get_json()["status"] == "online"
+
+    # 3. Test Health Route (/api/health)
+    res_health = client.get("/api/health")
+    assert res_health.status_code == 200
+    assert res_health.get_json()["status"] == "healthy"
+
+    # 4. Test Predict Route (/api/predict)
+    res_pred = client.post("/api/predict", json={"sepal_length": 5.1, "sepal_width": 3.5, "petal_length": 1.4, "petal_width": 0.2})
+    assert res_pred.status_code == 200
+    assert res_pred.get_json()["predicted_species"] == "Setosa"
+    print("  [OK] Flask endpoints verified.")
+
+
 if __name__ == "__main__":
     print("========================================")
     print("STARTING TEST SUITE FOR IRIS EDA DASHBOARD")
@@ -192,6 +220,7 @@ if __name__ == "__main__":
     test_visualizations(df)
     test_database()
     test_styles()
+    test_flask_app()
     print("========================================")
     print("ALL TESTS PASSED WITH 100% SUCCESS!")
     print("========================================")

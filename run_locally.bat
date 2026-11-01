@@ -1,13 +1,12 @@
-﻿@echo off
-title Iris EDA Streamlit Dashboard
+@echo off
+title Iris Botanical Analytics Lab - Streamlit Dashboard
 echo =====================================================================
-echo  Iris Dataset Multidimensional EDA Dashboard
-echo  CSE Mini-Project
+echo  Iris Botanical Analytics Lab - Multidimensional EDA Dashboard
 echo =====================================================================
 echo.
 echo Installing requirements if needed...
-python -m pip install -r requirements.txt --quiet
+python -m pip install -r requirements-streamlit.txt --quiet
 echo.
 echo Launching Streamlit Dashboard on http://localhost:8501 ...
-python -m streamlit run app.py
+python -m streamlit run streamlit_app.py
 pause

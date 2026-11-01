@@ -1,7 +1,5 @@
-# Exclude Python serverless runtime detection
-*.py
-requirements.txt
-cloudflared.exe
-push_to_github.bat
+# Build caches and local databases
+__pycache__/
+*.pyc
 *.db
-.streamlit/
+cloudflared.exe
