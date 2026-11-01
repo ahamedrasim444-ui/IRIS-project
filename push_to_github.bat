@@ -4,9 +4,9 @@ echo Push Iris EDA Dashboard to GitHub
 echo ========================================================
 echo.
 echo Step 1: Default repository URL is set to:
-echo         https://github.com/ahamedrasim444-ui/IRIS_complete.git
+echo         https://github.com/ahamedrasim444-ui/IRIS-mini.git
 echo.
-set "REPO_URL=https://github.com/ahamedrasim444-ui/IRIS_complete.git"
+set "REPO_URL=https://github.com/ahamedrasim444-ui/IRIS-mini.git"
 
 if "%REPO_URL%"=="" (
     echo Error: No repository URL provided.

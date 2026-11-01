@@ -98,7 +98,7 @@ def build_vercel_bundle():
       
       stlite.mount(
         {{
-          requirements: ["numpy", "pandas", "matplotlib"],
+          requirements: ["numpy", "pandas", "matplotlib", "requests"],
           entrypoint: "streamlit_app.py",
           files: bundledFiles,
           streamlitConfig: {{

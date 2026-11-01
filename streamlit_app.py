@@ -25,7 +25,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse, Circle
 from matplotlib.colors import LinearSegmentedColormap
-import requests
+try:
+    import requests
+except (ImportError, ModuleNotFoundError):
+    requests = None
 import streamlit as st
 
 # ------------------------------------------------------------------------------
@@ -745,35 +748,44 @@ def clean_iris_dataframe(raw_df: pd.DataFrame) -> pd.DataFrame:
 @st.cache_data(ttl=3600)
 def fetch_iris_data():
     """
-    Data Loader connecting directly to live GitHub Raw Open Data API with Scikit-learn fallback (Requirement 3).
+    Data Loader connecting to live GitHub Raw Open Data API with local fallback.
     """
+    for fallback_path in ["data/iris.csv", "iris.csv"]:
+        if os.path.exists(fallback_path):
+            return pd.read_csv(fallback_path)
     url = "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/iris.csv"
+    if requests is not None:
+        try:
+            r = requests.get(url, timeout=4)
+            if r.status_code == 200 and len(r.text) > 500:
+                return pd.read_csv(io.StringIO(r.text))
+        except Exception:
+            pass
     try:
-        r = requests.get(url, timeout=4)
-        if r.status_code == 200 and len(r.text) > 500:
-            return pd.read_csv(io.StringIO(r.text))
-        return pd.read_csv(url)
+        import urllib.request
+        with urllib.request.urlopen(url, timeout=4) as response:
+            if response.status == 200:
+                content = response.read().decode("utf-8")
+                return pd.read_csv(io.StringIO(content))
     except Exception:
-        from sklearn.datasets import load_iris
-        raw = load_iris(as_frame=True)
-        data = raw.frame
-        data.columns = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'species']
-        species_names = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
-        data['species'] = data['species'].map(species_names)
-        return data
+        pass
+    raise RuntimeError("Unable to load Iris dataset.")
 
 @st.cache_data(ttl=3600)
 def load_iris_database():
     """Wrapper that handles data cleaning and local cache fallbacks."""
+    for fallback_path in ["data/iris.csv", "iris.csv"]:
+        if os.path.exists(fallback_path):
+            try:
+                data = pd.read_csv(fallback_path)
+                return clean_iris_dataframe(data), "Data Source: Local Archive (Cached)", "success"
+            except Exception:
+                pass
     try:
         raw = fetch_iris_data()
-        return clean_iris_dataframe(raw), "Data Source: Live Open Data API (Connected)", "success"
-    except Exception:
-        for fallback_path in ["data/iris.csv", "iris.csv"]:
-            if os.path.exists(fallback_path):
-                data = pd.read_csv(fallback_path)
-                return clean_iris_dataframe(data), "Data Source: Local Archive (Cached)", "info"
-        raise RuntimeError("Unable to load Iris dataset.")
+        return clean_iris_dataframe(raw), "Data Source: Live Open Data API (Connected)", "info"
+    except Exception as e:
+        raise RuntimeError(f"Unable to load Iris dataset: {e}")
 
 try:
     df_raw, source_label, source_status = load_iris_database()
