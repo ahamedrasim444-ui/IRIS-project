@@ -1,6 +1,6 @@
 # 🌸 Iris Botanical Analytics Lab (`IRIS-project`)
 ### Production-Ready Python Flask Backend & Machine Learning API
-**Configured for High-Performance Serverless Deployment on Vercel**
+**Configured for 24/7 High Availability Serverless Deployment on Vercel**
 
 [![Python CI](https://github.com/ahamedrasim444-ui/IRIS-project/actions/workflows/ci.yml/badge.svg)](https://github.com/ahamedrasim444-ui/IRIS-project/actions/workflows/ci.yml)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Serverless%20Python-black?logo=vercel)](https://vercel.com/)
@@ -9,9 +9,9 @@
 ---
 
 ## 📌 Project Overview
-The **Iris Botanical Analytics Lab** (`IRIS-project`) is an end-to-end Python Flask REST API backend engineered for real-time exploratory data science, mathematical linear algebra, and species classification of Fisher's 1936 Iris dataset.
+The **Iris Botanical Analytics Lab** (`IRIS-project`) is a production-grade, serverless-ready Python Flask REST API backend engineered for real-time exploratory data science, mathematical linear algebra, and species classification of Fisher's 1936 Iris dataset.
 
-The backend is fully configured for seamless, error-free serverless deployment on **Vercel** (`@vercel/python` runtime) by exposing top-level WSGI variables (`app`, `application`, `handler`) with zero Streamlit dependencies.
+The backend is configured for seamless deployment on **Vercel** (`@vercel/python` runtime) by exposing top-level WSGI variables (`app`, `application`, `handler`) with zero Streamlit dependencies.
 
 ### Key Architectural Highlights
 - **Serverless-Optimized WSGI Architecture**: Built with lightweight Flask 3.0, CORS, and Gunicorn for sub-100ms response times on Vercel Lambda functions.
@@ -81,7 +81,7 @@ Serves raw records and descriptive statistics from `data/iris.csv`.
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-vercel-domain.vercel.app/api/dataset?species=setosa&limit=2"
+curl -X GET "https://iris-project.vercel.app/api/dataset?species=setosa&limit=2"
 ```
 
 ---
@@ -151,33 +151,39 @@ IRIS-project/
 
 ---
 
-## 🌐 Deploying to Vercel (1-Click)
+## 🌐 24/7 Vercel Production Deployment & Domain Configuration
 
-The repository is preconfigured for Vercel's Python runtime via `vercel.json`:
+### 1. Automated CI/CD Git Triggers
+Deploying to Vercel via GitHub ensures 24/7 zero-downtime serverless availability. Every commit pushed to `main` triggers an automatic immutable deployment with automated rollbacks if build checks fail.
 
-```json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "app.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "destination": "app.py"
-    }
-  ]
-}
-```
-
-### Steps to Deploy:
-1. Push this repository to GitHub: `https://github.com/ahamedrasim444-ui/IRIS-project`.
-2. Visit [Vercel](https://vercel.com/new) and import the `IRIS-project` repository.
+1. Navigate to [Vercel Dashboard](https://vercel.com/new).
+2. Click **"Import Project"** and select **`ahamedrasim444-ui/IRIS-project`**.
 3. Framework Preset: **Other**.
-4. Click **Deploy**. Vercel will install dependencies from `requirements.txt`, bundle `app.py`, and expose the REST API with zero runtime errors.
+4. Root Directory: `./` (leave default).
+5. Click **"Deploy"**.
+
+---
+
+### 2. Custom Domain Configuration (`Settings -> Domains`)
+To attach a custom brand domain (e.g., `iris.yourdomain.com` or `yourdomain.com`):
+
+1. In your Vercel Project Dashboard, navigate to **Settings** > **Domains**.
+2. Enter your custom domain name (e.g. `api.yourdomain.com` or `iris-project.com`) and click **Add**.
+3. Select whether to redirect the apex domain to `www` or use a direct subdomain.
+
+#### DNS Registrar Configuration Records:
+Add the corresponding records in your DNS provider (Cloudflare, Namecheap, GoDaddy, Route 53):
+
+| Type | Name / Host | Value / Target | TTL | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **A Record** | `@` (apex) | `76.76.21.21` | Automatic / 300 | Vercel Global Anycast Edge IP |
+| **CNAME** | `api` or `www` | `cname.vercel-dns.com.` | Automatic / 300 | Vercel Anycast Edge Router |
+
+---
+
+### 3. Automated SSL/TLS & HTTPS Enforcement
+- Vercel automatically provisions and auto-renews free **Let's Encrypt** or **DigiCert** SSL certificates for all connected domains within 60 seconds of DNS validation.
+- All HTTP requests are automatically redirected to `https://` with HSTS (HTTP Strict Transport Security) enabled.
 
 ---
 
