@@ -1,7 +1,8 @@
 """
 database.py
-Persistent SQLite Database Engine for the Iris EDA Dashboard.
+Persistent SQLite Database Engine for the Iris EDA Backend.
 Logs live predictions, query vectors, and decision metrics.
+Serverless-ready with automated writable storage fallback (/tmp for Vercel/Lambda).
 """
 
 import sqlite3
@@ -10,13 +11,37 @@ from datetime import datetime
 from typing import Dict, List, Optional
 import pandas as pd
 
-DB_PATH = os.path.join("data", "predictions.db")
+
+def get_db_path() -> str:
+    """Returns a writable path for SQLite database, supporting serverless /tmp fallback."""
+    if "DB_PATH" in os.environ:
+        return os.environ["DB_PATH"]
+    
+    # In Vercel serverless environment, local filesystem is read-only except /tmp
+    if os.environ.get("VERCEL"):
+        return os.path.join("/tmp", "predictions.db")
+    
+    # Local environment: check if data/ is writable
+    try:
+        data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+        os.makedirs(data_dir, exist_ok=True)
+        test_path = os.path.join(data_dir, ".write_check")
+        with open(test_path, "w") as f:
+            f.write("ok")
+        os.remove(test_path)
+        return os.path.join(data_dir, "predictions.db")
+    except Exception:
+        # Read-only filesystem fallback
+        return os.path.join("/tmp", "predictions.db")
 
 
 def get_connection():
-    """Returns a SQLite connection."""
-    os.makedirs("data", exist_ok=True)
-    return sqlite3.connect(DB_PATH)
+    """Returns a SQLite connection with parent directory ensured."""
+    db_file = get_db_path()
+    parent = os.path.dirname(db_file)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
+    return sqlite3.connect(db_file)
 
 
 def init_db():
@@ -98,10 +123,11 @@ def get_prediction_stats() -> Dict[str, any]:
     }
 
 
-def clear_prediction_history():
-    """Clears all records from the database table."""
+def clear_database():
+    """Wipes all records from the prediction_logs table."""
     init_db()
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("DELETE FROM prediction_logs")
+        cursor.execute("DELETE FROM sqlite_sequence WHERE name='prediction_logs'")
         conn.commit()

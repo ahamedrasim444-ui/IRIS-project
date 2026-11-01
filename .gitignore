@@ -1,8 +1,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.streamlit/*
-!.streamlit/config.toml
+*.db
 .pytest_cache/
-cloudflared.exe
-data/*.db
+.venv/
+venv/
+env/
+.DS_Store
+Thumbs.db

@@ -1,79 +1,130 @@
 # 🌸 Iris Botanical Analytics Lab (`IRIS-project`)
-### Multidimensional Exploratory Data Science & Real-Time Morphometry Suite
-**Interactive Production Web Analytics with NumPy, Pandas, Matplotlib & Streamlit**
+### Production-Ready Python Flask Backend & Machine Learning API
+**Configured for High-Performance Serverless Deployment on Vercel**
 
 [![Python CI](https://github.com/ahamedrasim444-ui/IRIS-project/actions/workflows/ci.yml/badge.svg)](https://github.com/ahamedrasim444-ui/IRIS-project/actions/workflows/ci.yml)
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Serverless%20Python-black?logo=vercel)](https://vercel.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
 
 ## 📌 Project Overview
-This project presents an interactive, high-performance web dashboard engineered in **Python 3.10+** and **Streamlit** for multi-attribute exploratory data analysis (EDA) and nearest-centroid classification of the classic 1936 Fisher Iris botanical dataset.
+The **Iris Botanical Analytics Lab** (`IRIS-project`) is an end-to-end Python Flask REST API backend engineered for real-time exploratory data science, mathematical linear algebra, and species classification of Fisher's 1936 Iris dataset.
 
-It demonstrates foundational data science, linear algebra, and visual analytics principles using:
-- **Obsidian Dark Architecture (`#0B0F17`)**: High-contrast, executive aesthetic engineered for readability across mobile phones, tablets, and desktop displays with zero header clipping.
-- **Pure NumPy Linear Algebra Engine**: Sub-millisecond matrix operations for empirical covariance ($\mathbf{\Sigma}$), Pearson correlation ($\mathbf{R}$), eigen-decomposition, and class centroids.
-- **Interactive Morphometric Diagram**: Dynamic 2D botanical SVG and vector geometry where outer sepals and inner petals resize in real time according to user centimeter dimensions.
-- **Resilient Multi-Tier Pipeline**: Direct integration with open data API endpoints and Scikit-learn datasets, backed by local offline CSV archives.
-- **Zero Personal Credentials**: Anonymized codebase suitable for institutional submission and enterprise portfolio presentation.
+The backend is fully configured for seamless, error-free serverless deployment on **Vercel** (`@vercel/python` runtime) by exposing top-level WSGI variables (`app`, `application`, `handler`) with zero Streamlit dependencies.
 
----
-
-## 📐 Mathematical Formulations
-
-### 1. Sample Covariance Matrix ($\mathbf{\Sigma}$)
-Given data matrix $\mathbf{X} \in \mathbb{R}^{n \times 4}$, the empirical mean vector is $\mathbf{\mu} = \frac{1}{n} \sum_{i=1}^n \mathbf{x}_i$. The centered data matrix is:
-$$\mathbf{X}_{\text{centered}} = \mathbf{X} - \mathbf{1} \mathbf{\mu}^T$$
-The unbiased sample covariance matrix is evaluated via contiguous matrix multiplication:
-$$\mathbf{\Sigma} = \frac{1}{n - 1} \mathbf{X}_{\text{centered}}^T \mathbf{X}_{\text{centered}}$$
-
-### 2. Pearson Correlation Matrix ($\mathbf{R}$)
-Normalized via standard deviations $\mathbf{D} = \text{diag}(\mathbf{\Sigma})^{1/2}$:
-$$\mathbf{R}_{ij} = \frac{\mathbf{\Sigma}_{ij}}{\sigma_i \sigma_j} \quad \Longleftrightarrow \quad \mathbf{R} = \mathbf{D}^{-1} \mathbf{\Sigma} \mathbf{D}^{-1}$$
-
-### 3. Principal Eigen-Decomposition & PCA
-$$\mathbf{\Sigma} \mathbf{v}_i = \lambda_i \mathbf{v}_i$$
-The explained variance ratio for component $i$ is:
-$$\text{Variance Explained}(\%) = \frac{\lambda_i}{\sum_{j=1}^4 \lambda_j} \times 100\%$$
-
-### 4. Nearest-Centroid Classifier
-Given a user query vector $\mathbf{x} = [SL, SW, PL, PW]^T$ and class mean centroids $\mathbf{\mu}_k$ for $k \in \{\text{Setosa}, \text{Versicolor}, \text{Virginica}\}$:
-$$\hat{y} = \arg\min_{k} \|\mathbf{x} - \mathbf{\mu}_k\|_2 = \arg\min_{k} \sqrt{\sum_{j=1}^4 (x_j - \mu_{k,j})^2}$$
-
-Softmax proximity confidence scores:
-$$w_k = \frac{\exp(-d_k / T)}{\sum_j \exp(-d_j / T)} \times 100\%$$
+### Key Architectural Highlights
+- **Serverless-Optimized WSGI Architecture**: Built with lightweight Flask 3.0, CORS, and Gunicorn for sub-100ms response times on Vercel Lambda functions.
+- **Pure NumPy Linear Algebra Engine**: Sub-millisecond matrix computations for class mean centroids, empirical covariance ($\mathbf{\Sigma}$), Pearson correlation ($\mathbf{R}$), and principal eigen-decomposition.
+- **Nearest-Centroid Classifier API**: Vectorized L2 Euclidean distance classification ($d = \|\mathbf{x} - \mathbf{\mu}_k\|_2$) with Softmax confidence scoring.
+- **Resilient SQLite Persistence**: Automated serverless storage resolution defaulting to `/tmp` on read-only cloud environments.
+- **Automated Multi-Version CI**: Multi-version test runner validating Python 3.10, 3.11, and 3.12.
 
 ---
 
-## 🚀 Dashboard Architecture & Tabs
+## 🚀 API Endpoints & Contract
 
-### 🎛️ Control Panel (Sidebar)
-- **Data Connectivity Status**: Real-time badge indicating live Open Data API connection or local cached archive.
-- **Multiselect Species Filter**: Dynamically filter any subset of `Setosa`, `Versicolor`, and `Virginica`.
-- **4 Dimensional Range Sliders**: Real-time bounding sliders for Sepal Length, Sepal Width, Petal Length, and Petal Width.
+### 1. Discovery & Status: `GET /`
+Returns system status, scientific stack versions, and available endpoints.
 
-### 📑 Core Dashboard Tabs
-1. **Tab 1: Overview & Dataset**
-   - 4 Executive KPI cards: Total Analyzed Flowers, Active Filtered Records, Taxonomic Classes, and Dataset Integrity.
-   - 3 Plain-English botanical cards describing morphological markers for each species.
-   - Interactive, searchable dataframe with instant CSV export.
-2. **Tab 2: Visual Analytics**
-   - High-contrast Matplotlib bivariate scatter plot with Fisher's 2.45 cm decision boundary line (100% deterministic separation of Setosa).
-   - Sepal Length vs. Sepal Width bivariate cluster map.
-   - 4-panel histogram distribution grid across all continuous features.
-3. **Tab 3: Mathematical Engine**
-   - Sample Mean Vector comparison table across classes.
-   - $4 \times 4$ Sample Covariance Heatmap with numerical precision callouts.
-   - $4 \times 4$ Pearson Correlation Diverging Heatmap with Simpson's Paradox diagnostic note.
-   - Principal Component Analysis (PCA) eigenvalue and cumulative variance table.
-4. **Tab 4: Live Flower Predictor**
-   - 4 interactive morphometric sliders with live Euclidean distance centroid prediction.
-   - Specimen archetype quick presets: *Typical Setosa*, *Typical Versicolor*, *Typical Virginica*.
-   - Live prediction banner with confidence score and distance breakdown.
-   - 2D query point projection scatter plot showing input vector relative to centroids.
-   - Live scaling morphometric diagram illustrating physical sepals and petals in real time.
-   - SQLite history logging (`data/predictions.db`).
+**Example Response:**
+```json
+{
+  "status": "online",
+  "service": "Iris Botanical Analytics Lab API",
+  "runtime": "Vercel Serverless Python (Flask WSGI)",
+  "framework": "Flask 3.0.2",
+  "scientific_stack": {
+    "numpy": "1.26.4",
+    "pandas": "2.2.1"
+  },
+  "endpoints": {
+    "root": "/",
+    "health": "/api/health",
+    "dataset": "/api/dataset",
+    "predict": "/api/predict"
+  }
+}
+```
+
+---
+
+### 2. System Health & Diagnostics: `GET /api/health`
+Verifies NumPy/Pandas computation engine readiness, dataset availability, and SQLite connectivity.
+
+**Example Response:**
+```json
+{
+  "status": "healthy",
+  "engine": "healthy",
+  "database": "connected",
+  "diagnostics": {
+    "dataset_rows": 150,
+    "species_classes": ["Setosa", "Versicolor", "Virginica"],
+    "features": ["sepal_length", "sepal_width", "petal_length", "petal_width"],
+    "database_stats": {
+      "total_records": 12,
+      "species_distribution": {"Setosa": 6, "Virginica": 4, "Versicolor": 2}
+    }
+  }
+}
+```
+
+---
+
+### 3. Dataset & Descriptive Statistics: `GET /api/dataset`
+Serves raw records and descriptive statistics from `data/iris.csv`.
+
+**Query Parameters:**
+- `species` *(optional)*: Filter by species (`setosa`, `versicolor`, `virginica`)
+- `limit` *(optional)*: Maximum rows to return (default: `150`)
+
+**Example Request:**
+```bash
+curl -X GET "https://your-vercel-domain.vercel.app/api/dataset?species=setosa&limit=2"
+```
+
+---
+
+### 4. Real-Time Species Classification: `POST /api/predict`
+Accepts morphological measurements (in cm), evaluates L2 Euclidean distances to species centroids via pure NumPy, logs the query to SQLite, and returns predictions.
+
+**Request Payload:**
+```json
+{
+  "sepal_length": 5.1,
+  "sepal_width": 3.5,
+  "petal_length": 1.4,
+  "petal_width": 0.2
+}
+```
+
+**Response Payload (200 OK):**
+```json
+{
+  "status": "success",
+  "predicted_species": "Setosa",
+  "confidence_percentage": 98.42,
+  "distance_cm": 0.1414,
+  "all_distances": {
+    "Setosa": 0.1414,
+    "Versicolor": 3.4211,
+    "Virginica": 5.0232
+  },
+  "class_probabilities": {
+    "Setosa": 98.42,
+    "Versicolor": 1.54,
+    "Virginica": 0.04
+  },
+  "input_coordinates": {
+    "sepal_length": 5.1,
+    "sepal_width": 3.5,
+    "petal_length": 1.4,
+    "petal_width": 0.2
+  },
+  "transaction_id": 13
+}
+```
 
 ---
 
@@ -81,82 +132,73 @@ $$w_k = \frac{\exp(-d_k / T)}{\sum_j \exp(-d_j / T)} \times 100\%$$
 
 ```
 IRIS-project/
-├── .devcontainer/             # Visual Studio Code Dev Container configuration
-│   └── devcontainer.json
-├── .github/                   # GitHub Actions Continuous Integration
-│   └── workflows/ci.yml       # Automated multi-version Python test runner
-├── .streamlit/                # Streamlit server & obsidian theme configuration
-│   └── config.toml
-├── assets/                    # Botanical vector logo and authentic photography
-│   ├── iris_logo.svg
-│   ├── setosa.jpg
-│   ├── versicolor.jpg
-│   └── virginica.jpg
-├── data/                      # Dataset repository
-│   └── iris.csv               # Fisher's 1936 dataset (150 samples)
-├── app.py                     # Main Streamlit dashboard application
-├── streamlit_app.py           # Streamlit Community Cloud primary entry point
+├── .github/
+│   └── workflows/
+│       └── ci.yml             # GitHub Actions multi-version Python test runner
+├── data/
+│   └── iris.csv               # Bundled Fisher's 1936 dataset (150 samples)
+├── app.py                     # Production Flask WSGI backend (exports top-level app)
 ├── data_engine.py             # Pure NumPy linear algebra & statistical module
-├── database.py                # SQLite persistence manager
-├── styles.py                  # Obsidian design system & CSS injection
-├── test_engine.py             # Automated unit testing suite (100% coverage)
-├── visualizations.py          # Matplotlib figure generators
-├── build_vercel.py            # Static WebAssembly (Stlite) bundle generator
-├── index.html                 # Precompiled WebAssembly client application
-├── vercel.json                # Vercel deployment routing configuration
-├── requirements.txt           # Production Python dependencies
-├── run_locally.bat            # Windows 1-click local launch script
-├── push_to_github.bat         # Git push helper script
-└── README.md                  # Project documentation
+├── database.py                # Serverless-ready SQLite persistence manager
+├── styles.py                  # Obsidian design system styling helpers
+├── visualizations.py          # Matplotlib figure generation module
+├── test_engine.py             # Automated unit testing suite (100% test coverage)
+├── requirements.txt           # Standard Python production dependencies
+├── vercel.json                # Vercel serverless function routing configuration
+├── .gitignore                 # Clean Git ignore rules
+└── README.md                  # Project documentation & API specifications
 ```
 
 ---
 
-## 🌐 Deployment Instructions
+## 🌐 Deploying to Vercel (1-Click)
 
-### 1. Deploying to Streamlit Community Cloud (Recommended 1-Click)
-1. Fork or push this repository to your GitHub account: `https://github.com/ahamedrasim444-ui/IRIS-project`.
-2. Navigate to [share.streamlit.io](https://share.streamlit.io/) and sign in with GitHub.
-3. Click **"New app"**.
-4. Select:
-   - **Repository:** `ahamedrasim444-ui/IRIS-project`
-   - **Branch:** `main`
-   - **Main file path:** `streamlit_app.py` (or `app.py`)
-5. Click **"Deploy!"**. The deployment will install dependencies from `requirements.txt` and launch with zero errors.
+The repository is preconfigured for Vercel's Python runtime via `vercel.json`:
 
-### 2. Deploying to Vercel (WebAssembly / Stlite)
-The repository includes preconfigured WebAssembly bundling for zero-server hosting:
-1. Import `ahamedrasim444-ui/IRIS-project` in [vercel.com](https://vercel.com/new).
-2. Framework Preset: **Other**.
-3. Output Directory: Leave root.
-4. Click **Deploy**.
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "destination": "app.py"
+    }
+  ]
+}
+```
+
+### Steps to Deploy:
+1. Push this repository to GitHub: `https://github.com/ahamedrasim444-ui/IRIS-project`.
+2. Visit [Vercel](https://vercel.com/new) and import the `IRIS-project` repository.
+3. Framework Preset: **Other**.
+4. Click **Deploy**. Vercel will install dependencies from `requirements.txt`, bundle `app.py`, and expose the REST API with zero runtime errors.
 
 ---
 
-## 💻 Local Setup & Execution
+## 💻 Local Development & Testing
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/ahamedrasim444-ui/IRIS-project.git
-cd IRIS-project
-```
-
-### 2. Install Dependencies
+### 1. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Run the Automated Test Suite
+### 2. Run Test Suite
 ```bash
 python test_engine.py
 ```
 Expected output: `ALL TESTS PASSED WITH 100% SUCCESS!`
 
-### 4. Run the Web Application
+### 3. Run the Flask Development Server
 ```bash
-streamlit run streamlit_app.py
+python app.py
 ```
-Open your browser at `http://localhost:8501`.
+Access the API at `http://localhost:5000`.
 
 ---
 
