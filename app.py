@@ -49,13 +49,25 @@ except Exception as _init_err:
 
 
 # ------------------------------------------------------------------------------
-# 2. SYSTEM STATUS & DISCOVERY ROOT ROUTE
+# 2. SYSTEM STATUS & DISCOVERY ROOT ROUTE (DUAL BROWSER UI & REST API)
 # ------------------------------------------------------------------------------
 @app.route("/", methods=["GET"])
 def index():
     """
-    Root endpoint: Returns welcome payload, system status, runtime architecture, and API discovery routes.
+    Root endpoint:
+    - If accessed from a web browser (Accept: text/html), serves the real-time Streamlit WebAssembly UI.
+    - If accessed programmatically / via API client, returns the JSON status payload.
     """
+    accept = request.headers.get("Accept", "")
+    force_json = request.args.get("json", "").lower() in ("1", "true")
+
+    if "text/html" in accept and not force_json:
+        base_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else "."
+        html_file = os.path.join(base_dir, "index.html")
+        if os.path.exists(html_file):
+            with open(html_file, "r", encoding="utf-8") as f:
+                return f.read(), 200, {"Content-Type": "text/html; charset=utf-8"}
+
     return jsonify({
         "message": "Welcome to the Iris Botanical Analytics Lab API",
         "status": "online",
@@ -69,12 +81,48 @@ def index():
         },
         "endpoints": {
             "root": "/",
+            "interactive_ui": "/streamlit",
             "health": "/api/health",
             "dataset": "/api/dataset",
             "predict": "/api/predict"
         },
-        "description": "Production Flask backend providing dataset analytics and pure NumPy nearest-centroid species classification."
+        "description": "Production Flask backend providing dataset analytics, pure NumPy nearest-centroid species classification, and embedded Streamlit real-time dashboard."
     }), 200
+
+
+@app.route("/streamlit", methods=["GET"])
+@app.route("/dashboard", methods=["GET"])
+@app.route("/ui", methods=["GET"])
+def streamlit_portal():
+    """Direct URL endpoint guaranteed to return the real-time Streamlit Web UI."""
+    base_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else "."
+    html_file = os.path.join(base_dir, "index.html")
+    if os.path.exists(html_file):
+        with open(html_file, "r", encoding="utf-8") as f:
+            return f.read(), 200, {"Content-Type": "text/html; charset=utf-8"}
+    return "Streamlit Dashboard initializing...", 200
+
+
+@app.route("/streamlit_app.py", methods=["GET"])
+def serve_streamlit_app_file():
+    """Serves the Python Streamlit script for static CDN and Stlite runtime fetch."""
+    base_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else "."
+    py_file = os.path.join(base_dir, "streamlit_app.py")
+    if os.path.exists(py_file):
+        with open(py_file, "r", encoding="utf-8") as f:
+            return f.read(), 200, {"Content-Type": "text/plain; charset=utf-8"}
+    return "File not found", 404
+
+
+@app.route("/data/iris.csv", methods=["GET"])
+def serve_iris_csv_file():
+    """Serves the Iris dataset CSV for static CDN and Stlite runtime fetch."""
+    base_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else "."
+    csv_file = os.path.join(base_dir, "data", "iris.csv")
+    if os.path.exists(csv_file):
+        with open(csv_file, "r", encoding="utf-8") as f:
+            return f.read(), 200, {"Content-Type": "text/csv; charset=utf-8"}
+    return "File not found", 404
 
 
 # ------------------------------------------------------------------------------

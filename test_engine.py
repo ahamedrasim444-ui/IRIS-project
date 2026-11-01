@@ -162,6 +162,15 @@ def test_flask_api():
     assert data_root["status"] == "online"
     assert "endpoints" in data_root
 
+    # Test Browser UI Endpoint (/streamlit and Accept: text/html)
+    res_ui = client.get("/streamlit")
+    assert res_ui.status_code == 200
+    assert "Iris Botanical Analytics Lab" in res_ui.get_data(as_text=True)
+
+    res_html = client.get("/", headers={"Accept": "text/html"})
+    assert res_html.status_code == 200
+    assert "Iris Botanical Analytics Lab" in res_html.get_data(as_text=True)
+
     # 2. Test Health Route (/api/health)
     res_health = client.get("/api/health")
     assert res_health.status_code == 200, f"Expected 200 on /api/health, got {res_health.status_code}"

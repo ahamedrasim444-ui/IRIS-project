@@ -1,17 +1,19 @@
 # 🌸 Iris Botanical Analytics Lab (`IRIS-project`)
-### Production-Ready Python Flask Backend & Machine Learning API
-**Configured for 24/7 High Availability Serverless Deployment on Vercel**
+### Real-Time Streamlit Web Dashboard & High-Performance Python WSGI API
+**Configured for 24/7 Live Deployment on Vercel & Streamlit Cloud**
 
 [![Python CI](https://github.com/ahamedrasim444-ui/IRIS-project/actions/workflows/ci.yml/badge.svg)](https://github.com/ahamedrasim444-ui/IRIS-project/actions/workflows/ci.yml)
-[![Vercel Deployment](https://img.shields.io/badge/Vercel-Serverless%20Python-black?logo=vercel)](https://vercel.com/)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Real--Time%20Server-black?logo=vercel)](https://iris-eda.vercel.app/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
 
 ## 📌 Project Overview
-The **Iris Botanical Analytics Lab** (`IRIS-project`) is a production-grade, serverless-ready Python Flask REST API backend engineered for real-time exploratory data science, mathematical linear algebra, and species classification of Fisher's 1936 Iris dataset.
+The **Iris Botanical Analytics Lab** (`IRIS-project`) is an executive-grade, real-time exploratory data science suite and species classification engine for Fisher's 1936 Iris dataset.
 
-The backend is configured for seamless deployment on **Vercel** (`@vercel/python` runtime) by exposing top-level WSGI variables (`app`, `application`, `handler`) with zero Streamlit dependencies.
+It features dual-mode execution:
+1. **Real-Time Streamlit Web Dashboard**: Built with Deep Tech Obsidian Dark Theme (`#0B0F17`), 3D perspective hero banner, 4 responsive analytical tabs, dynamic sliders, interactive Matplotlib plots, and real-time species prediction. Powered on Vercel via high-speed client-side WebAssembly (`@stlite/browser`).
+2. **Production Flask WSGI REST API**: Serverless endpoints (`/api/health`, `/api/dataset`, `/api/predict`) executing pure NumPy vector operations with sub-100ms response times.
 
 ### Key Architectural Highlights
 - **Serverless-Optimized WSGI Architecture**: Built with lightweight Flask 3.0, CORS, and Gunicorn for sub-100ms response times on Vercel Lambda functions.
